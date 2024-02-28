@@ -1,0 +1,3 @@
+include README.md
+recursive-include {{cookiecutter.project_name}}/templates *.html
+recursive-include {{cookiecutter.project_name}}/static *

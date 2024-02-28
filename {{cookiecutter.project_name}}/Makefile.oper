@@ -1,0 +1,44 @@
+# Makefile
+
+# 프로젝트 이름과 파이썬 실행 파일을 정의합니다.
+PROJECT_NAME=my_project
+PYTHON=python3
+
+# 가상 환경의 위치를 정의합니다.
+VENV=venv
+VENV_ACTIVATE=$(VENV)/bin/activate
+
+# 기본 명령
+.PHONY: all
+all: install
+
+# 가상 환경을 생성합니다.
+$(VENV): requirements.txt
+	$(PYTHON) -m venv $(VENV)
+	. $(VENV_ACTIVATE); pip install -U pip; pip install -r requirements.txt
+
+# 의존성을 설치합니다. 가상 환경이 없으면 만듭니다.
+.PHONY: install
+install: $(VENV)
+
+# 테스트를 실행합니다.
+.PHONY: test
+test:
+	. $(VENV_ACTIVATE); pytest
+
+# 패키지를 빌드합니다.
+.PHONY: build
+build:
+	. $(VENV_ACTIVATE); python setup.py sdist bdist_wheel
+
+# 가상 환경을 정리합니다.
+.PHONY: clean
+clean:
+	rm -rf $(VENV)
+	find . -type f -name '*.pyc' -delete
+	find . -type d -name '__pycache__' -exec rm -rf {} +
+
+# 가상 환경을 활성화합니다. (이 명령은 Makefile 내부에서는 작동하지 않습니다. 터미널에서 직접 입력해야 합니다.)
+.PHONY: activate
+activate:
+	@echo "Run 'source $(VENV_ACTIVATE)' to activate the virtual environment"
